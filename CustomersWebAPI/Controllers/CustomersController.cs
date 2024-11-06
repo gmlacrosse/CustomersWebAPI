@@ -22,7 +22,7 @@ namespace CustomersWebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomer()
         {
-            return await _context.Customer.OrderByDescending(c => c.Created).ToListAsync();
+            return await _context.Customer.OrderByDescending(c => c.Updated).ToListAsync();
         }
 
         // GET: api/Customers/5
@@ -37,6 +37,19 @@ namespace CustomersWebAPI.Controllers
             }
 
             return customer;
+        }
+
+        [HttpGet("/find/{email}")]
+        public async Task<ActionResult<Customer>> GetCustomerByEmail(string email)
+        {
+            var customer = await _context.Customer.FirstOrDefaultAsync(c => (c.Email ?? "") == email.ToLower());
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(customer);
         }
 
         // PUT: api/Customers/5
@@ -101,5 +114,7 @@ namespace CustomersWebAPI.Controllers
         {
             return _context.Customer.Any(e => e.Id == id);
         }
+
+   
     }
 }
