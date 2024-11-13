@@ -57,6 +57,12 @@ namespace CustomersWebAPI.Controllers
             {
                 return BadRequest();
             }
+            var existingCustomer = _context.Customer.FirstOrDefault(c => c.Email == customer.Email);
+
+            if (existingCustomer != null)
+            {
+                return BadRequest(new { message = "Email address already exists." });
+            }
 
             _context.Customer.Entry(customer).State = EntityState.Modified;
 
